@@ -8,9 +8,53 @@ const port = 8080;
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB({'region': 'us-east-1',apiVersion: "2012-08-10"});
 
+app.get('/api/users/:id', function (req, res) {
+	
+})
+
+
+app.use(bodyParser.json())
+
+app.post('/api/users', function(req, res) {
+    var userDetails = {
+    	userName: req.body.username,
+    	userPass: req.body.password,
+    	userEmail: req.body.email
+    }
+    postUser(userDetails);
+
+    res.send(userDetails.userName + ' ' + userDetails.userPass + ' ' + userDetails.userEmail);
+})
+
+app.listen(port, function () {
+	console.log('Server started! At http://localhost:' + port);
+});
+
+function getUser(userName){
+	if (!userName) { 
+		console.log('No user name provided');
+ 		return {};
+		}
+ 	var params = {
+		Key: {
+			"Username": {
+		 		S: userName
+			}
+		}, 
+		TableName: "Users"
+	};
+	dynamodb.getItem(params, function(err, data) {
+	   if (err) console.log(err, err.stack); 
+	   else {
+	   		console.log(data);
+	   		return data;
+	   }
+	});
+}
+
 function postUser(userDetails) {
 	if (!userDetails) { 
-		console.log('No user details provided')
+		console.log('No user details provided');
 		return {};
 	}
 	var params = {
@@ -33,21 +77,3 @@ function postUser(userDetails) {
 	else     console.log(data); 
 	});
 }
-
-
-app.use(bodyParser.json())
-
-app.post('/api/users', function(req, res) {
-    var userDetails = {
-    	userName: req.body.username,
-    	userPass: req.body.password,
-    	userEmail: req.body.email
-    }
-    postUser(userDetails);
-
-    res.send(userDetails.userName + ' ' + userDetails.userPass + ' ' + userDetails.userEmail);
-});
-
-app.listen(port, function () {
-	console.log('Server started! At http://localhost:' + port);
-});
