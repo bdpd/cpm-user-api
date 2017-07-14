@@ -6,7 +6,7 @@ const port = 8080;
 
 // AWS variables
 const AWS = require('aws-sdk');
-const dynamodb = AWS.DynamoDB({'region': 'us-east-1',apiVersion: "2012-08-10"});
+const dynamodb = new AWS.DynamoDB({'region': 'us-east-1',apiVersion: "2012-08-10"});
 
 function postUser(userDetails) {
 	if (!userDetails) { 
