@@ -9,7 +9,8 @@ const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB({'region': 'us-east-1',apiVersion: "2012-08-10"});
 
 app.get('/api/users/:id', function (req, res) {
-	
+	var userFromDB = getUser(req.params.id);
+	res.send(userFromDB);
 })
 
 
