@@ -47,11 +47,26 @@ function getUser(userName){
 	dynamodb.getItem(params, function(err, data) {
 	   if (err) console.log(err, err.stack); 
 	   else {
-	   		console.log(data);
-	   		return data;
+	   		console.log(user(data));
+	   		return user(data);
 	   }
 	});
 }
+
+function user(data) {
+  if (!data || !data.Item) {
+    return {};
+  }
+  const item = data.Item;
+  const user = {
+   "Username": item.Username.S,
+   "Password": item.Password.S,
+   "Email": item.Email.S
+  };
+  return story;
+}
+
+
 
 function postUser(userDetails) {
 	if (!userDetails) { 
