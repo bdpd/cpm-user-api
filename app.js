@@ -63,7 +63,7 @@ function user(data) {
    "Password": item.Password.S,
    "Email": item.Email.S
   };
-  return story;
+  return user;
 }
 
 
