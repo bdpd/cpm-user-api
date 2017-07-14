@@ -45,7 +45,7 @@ app.post('/api/users', function(req, res) {
     }
     postUser(userDetails);
 
-    res.send(user_name + ' ' + user_pass + ' ' + user_email);
+    res.send(userDetails.userName + ' ' + userDetails.userPass + ' ' + userDetails.userEmail);
 });
 
 app.listen(port, function () {
