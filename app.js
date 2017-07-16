@@ -5,11 +5,14 @@ const bodyParser = require('body-parser');
 const port = 3000;
 const redis = require('redis');
 const REDIS_PORT = 6379;
-const client = redis.createClient(REDIS_PORT,"test.etj8lh.0001.use1.cache.amazonaws.com");
+const redis_server = process.env.REDIS_SERVER || localhost;
+const awsRegion = process.env.AWS_REGION || 'us-east-1';
+const client = redis.createClient(REDIS_PORT,redis_server);
+const dynamoTable = process.env.DYNAMODB_TABLE || "users";
 
 // AWS variables
 const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB({'region': 'us-east-1',apiVersion: "2012-08-10"});
+const dynamodb = new AWS.DynamoDB({'region': awsRegion, apiVersion: "2012-08-10"});
 
 client.on('error', function (err) {
     console.log('error event - ' + client.host + ':' + client.port + ' - ' + err);
@@ -56,7 +59,7 @@ function getUser(userName) {
                                         S: userName
                                 }
                         },
-                        TableName: "Users"
+                        TableName: dynamoTable
                 };
                 dynamodb.getItem(params, function(err, data) {
                         if (err) rej(err, err.stack);
@@ -116,7 +119,7 @@ function postUser(userDetails) {
                         }
                 },
                 ReturnConsumedCapacity: "TOTAL",
-                TableName: "Users"
+                TableName: dynamoTable
         };
         dynamodb.putItem(params, function(err, data) {
         if (err) console.log(err, err.stack);
@@ -131,7 +134,7 @@ function deleteUser(username) {
                                 S: username
                         }
                 },
-                TableName: "Users"
+                TableName: dynamoTable
                 };
         dynamodb.deleteItem(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
